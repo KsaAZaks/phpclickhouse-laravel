@@ -23,6 +23,13 @@ class BaseModel
     use HasEvents;
 
     /**
+     * The connection associated with the model.
+     *
+     * @var string
+     */
+    protected $connection;
+
+    /**
      * The table associated with the model.
      *
      * @var string
@@ -59,6 +66,16 @@ class BaseModel
     protected static $dispatcher;
 
     /**
+     * Get the connection associated with the model.
+     *
+     * @return string
+     */
+    public function getConnection(): string
+    {
+        return $this->connection ?? 'clickhouse';
+    }
+
+    /**
      * Get the table associated with the model.
      *
      * @return string
@@ -92,7 +109,7 @@ class BaseModel
      */
     public static function getClient(): Client
     {
-        return DB::connection('clickhouse')->getClient();
+        return DB::connection((new static)->getConnection())->getClient();
     }
 
     /**
@@ -253,7 +270,7 @@ class BaseModel
      */
     public static function select(array $select = ['*']): Builder
     {
-        return (new Builder)->select($select)->from((new static)->getTable());
+        return (new Builder((new static())->getConnection()))->select($select)->from((new static)->getTable());
     }
 
     /**

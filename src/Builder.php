@@ -16,8 +16,12 @@ class Builder extends BaseBuilder
     /** @var string */
     protected $tableSources;
 
-    public function __construct()
+    /** @var string */
+    protected $connection;
+
+    public function __construct($connection='clickhouse')
     {
+        $this->connection = $connection;
         $this->grammar = new Grammar();
     }
 
@@ -27,7 +31,7 @@ class Builder extends BaseBuilder
     public function get(): Statement
     {
         /** @var Client $db */
-        $db = DB::connection('clickhouse')->getClient();
+        $db = DB::connection($this->connection)->getClient();
 
         return $db->select($this->toSql());
     }
@@ -77,7 +81,7 @@ class Builder extends BaseBuilder
         $table = $this->tableSources ?? $this->getFrom()->getTable();
         $sql = "ALTER TABLE $table DELETE " . $this->grammar->compileWheresComponent($this, $this->getWheres());
         /** @var Client $db */
-        $db = DB::connection('clickhouse')->getClient();
+        $db = DB::connection($this->connection)->getClient();
 
         return $db->write($sql);
     }

@@ -22,7 +22,7 @@ More: https://github.com/smi2/phpClickHouse#features
 **1.**  Install via composer
 
 ```sh
-$ composer require glushkovds/phpclickhouse-laravel
+$ composer require ksaazaks/phpclickhouse-laravel
 ```
 
 **2.** Add new connection into your config/database.php:
@@ -93,6 +93,7 @@ class MyTable extends BaseModel
 {
     // Not necessary. Can be obtained from class name MyTable => my_table
     protected $table = 'my_table';
+    protected $connection = 'my_connection';
 
 }
 ```
